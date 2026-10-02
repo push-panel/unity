@@ -77,6 +77,41 @@ public class PushPanelInit : MonoBehaviour
 
 ۳. برای اطمینان بعد از نصب روی دیوایس، لاگ‌کت را با فیلتر `PushSDK` ببین — باید ثبت توکن را نشان بدهد. اگر ثبت توکن دیده نشد، برگرد به قدم ۱ و ۲.
 
-## ۶. بیلد
+## ۶. سرویس فایربیس اختصاصی (اختیاری — فقط اگر کتابخانه پوش دیگری هم داری)
+
+FCM در هر اپ فقط به **یک** `FirebaseMessagingService` پیام تحویل می‌دهد. اگر کتابخانه دیگری هم سرویس خودش را دارد، باید سرویس داخلی SDK را حذف کنی و همه پیام‌ها را از سرویس واحد به هر کتابخانه فوروارد کنی — پیام‌هایی که مال پنل نیستند توسط SDK نادیده گرفته می‌شوند (مارکر `pushpanel=pushpanel`).
+
+۱. در `Custom Main Manifest` سرویس داخلی SDK را حذف کن (`xmlns:tools` را هم به تگ `manifest` اضافه کن):
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application ...>
+        <!-- حذف سرویس داخلی SDK تا فقط سرویس خودمان پیام بگیرد -->
+        <service
+            android:name="ir.pushpanel.sdk.PushMessagingService"
+            tools:node="remove" />
+        <!-- سرویس خودمان -->
+        <service
+            android:name=".MyFirebaseService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
+```
+
+۲. سرویس واحد (جاوا/کاتلین، داخل همان `Assets/Plugins/Android`) همه پیام‌ها را فوروارد کند:
+
+```java
+PushPanel.forwardMessage(context, remoteMessage); // فقط پیام‌های پنل هندل می‌شود، بقیه نادیده گرفته می‌شود
+PushPanel.forwardToken(context, token);
+```
+
+نکته: `init` از C# (بخش ۴) همچنان لازم است؛ فوروارد قبل از init نادیده گرفته می‌شود. اگر کتابخانه دیگری نداری، این بخش را رد کن — سرویس داخلی SDK به‌صورت پیش‌فرض کار می‌کند.
+
+## ۷. بیلد
 
 `File > Build Settings > Android > Build` — خطای Resolve با `Android Resolver` (`Assets > External Dependency Manager > Android Resolver > Resolve`) معمولاً با همین وابستگی حل می‌شود.
