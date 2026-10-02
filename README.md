@@ -2,16 +2,16 @@
 
 پروژه نمونه Unity برای اتصال کتابخانه پوش PushPanel در اندروید.
 
-کتابخانه: `ir.push-panel:push-sdk:1.7.2` از MavenCentral
+کتابخانه: `ir.push-panel:push-sdk:1.8.3` از MavenCentral
 
 > این راهنما بر اساس API نیتیو SDK نوشته شده و در این محیط بیلد نشده است.
 
 ## ۱. اضافه کردن AAR
 
-1. فایل `push-sdk-1.7.2.aar` را از MavenCentral دانلود کن.
+1. فایل `push-sdk-1.8.3.aar` را از MavenCentral دانلود کن.
 2. بگذار در:
 ```
-Assets/Plugins/Android/push-sdk-1.7.2.aar
+Assets/Plugins/Android/push-sdk-1.8.3.aar
 ```
 3. در Inspector همان فایل، تیک Android را فعال کن.
 
@@ -23,7 +23,7 @@ Assets/Plugins/Android/push-sdk-1.7.2.aar
 
 ```gradle
 dependencies {
-    implementation("ir.push-panel:push-sdk:1.7.2")
+    implementation("ir.push-panel:push-sdk:1.8.3")
 }
 ```
 
@@ -54,7 +54,7 @@ public class PushPanelInit : MonoBehaviour
 
         using (var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
         using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
-        using (var pushSdk = new AndroidJavaClass("ir.pushpanel.sdk.PushSdk"))
+        using (var pushSdk = new AndroidJavaClass("ir.pushpanel.sdk.PushPanel"))
         {
             pushSdk.CallStatic("init", activity);
         }
@@ -65,7 +65,7 @@ public class PushPanelInit : MonoBehaviour
 
 این اسکریپت را روی یک GameObject در صحنه اول بگذار.
 
-> در نسخه 1.7.2 به `handleIntent` و کد جداگانه برای اسپلش نیازی نیست؛ فقط `init` کافی است.
+> در نسخه 1.8.3 نقطه ورود به `PushPanel` تغییر نام داده (قبلاً `PushSdk`) و به `handleIntent` و کد جداگانه برای اسپلش نیازی نیست؛ فقط `init` کافی است.
 
 ## ۵. فایربیس (برای دریافت واقعی پوش — اجباری)
 
